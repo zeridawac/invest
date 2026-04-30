@@ -135,7 +135,11 @@ export default function DashboardPage() {
                   <td style={{ fontWeight: inv.id === currentUser?.id ? '700' : '500' }}>
                     {inv.id === currentUser?.id ? `${inv.investorName} (أنت)` : inv.investorName}
                   </td>
-                  <td>{inv.investmentStartDate ? new Date(inv.investmentStartDate).toLocaleDateString('ar-MA') : '-'}</td>
+                  <td>
+                    {inv.id === currentUser?.id 
+                      ? (inv.investmentStartDate ? new Date(inv.investmentStartDate).toLocaleDateString('ar-MA') : '-')
+                      : 'مخفي'}
+                  </td>
                   <td className={styles.priceCell}>{inv.totalInvestment} MAD</td>
                   <td className={styles.priceCellSuccess}>{inv.profit} MAD</td>
                   <td>

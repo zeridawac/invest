@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   
-  if (pathname.startsWith('/api/users') && payload.role !== 'ADMIN' && !pathname.startsWith('/api/users/investors') && !pathname.startsWith('/api/users/bank')) {
+  if (pathname.startsWith('/api/users') && payload.role !== 'ADMIN' && !pathname.startsWith('/api/users/investors') && !pathname.startsWith('/api/users/bank') && !pathname.startsWith('/api/users/me')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
@@ -42,5 +42,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/bank-info/:path*', '/api/users/:path*', '/api/withdrawals/:path*', '/login'],
+  matcher: ['/dashboard/:path*', '/admin/:path*', '/bank-info/:path*', '/api/users/:path*', '/api/withdrawals/:path*', '/api/loyalty/:path*', '/login', '/loyalty-points/:path*'],
 };

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LogOut, Home, Landmark, Users, CreditCard } from 'lucide-react';
+import { LogOut, Home, Landmark, Users, CreditCard, Gift } from 'lucide-react';
 import styles from './sidebar.module.css';
 
 export default function Sidebar({ isAdmin }: { isAdmin?: boolean }) {
@@ -47,6 +47,10 @@ export default function Sidebar({ isAdmin }: { isAdmin?: boolean }) {
             <Link href="/bank-info" className={`${styles.link} ${pathname === '/bank-info' ? styles.active : ''}`}>
               <Landmark size={20} className={styles.icon} />
               معلوماتي البنكية
+            </Link>
+            <Link href="/loyalty-points" className={`${styles.link} ${pathname === '/loyalty-points' ? styles.active : ''}`}>
+              <Gift size={20} className={styles.icon} />
+              نقط الولاء
             </Link>
           </>
         )}

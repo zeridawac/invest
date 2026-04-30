@@ -44,7 +44,7 @@ export async function GET() {
       return {
         id: user.id,
         investorName: maskedName,
-        investmentStartDate: user.investmentStartDate,
+        investmentStartDate: null,
         totalInvestment: maskedInv,
         status: user.status,
         profit: maskedProf,
