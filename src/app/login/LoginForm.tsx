@@ -44,7 +44,7 @@ export default function LoginForm() {
 
   return (
     <form className={styles.loginCard} onSubmit={handleLogin}>
-      <h1 className={styles.title}>REDA INVESTISMENT</h1>
+      <h1 className={styles.title}>REDA INVESTISMENT V2</h1>
       <p className={styles.subtitle}>تسجيل الدخول لحسابك</p>
 
       {error && <div className={styles.error}>{error}</div>}

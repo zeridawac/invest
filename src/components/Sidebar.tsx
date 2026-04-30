@@ -18,7 +18,7 @@ export default function Sidebar({ isAdmin }: { isAdmin?: boolean }) {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.header}>
-        <h2 className={styles.brand}>REDA INVESTISMENT</h2>
+        <h2 className={styles.brand}>REDA INVESTISMENT V2</h2>
         <p className={styles.role}>{isAdmin ? 'لوحة تحكم الإدارة' : 'لوحة تحكم المستثمر'}</p>
       </div>
 
