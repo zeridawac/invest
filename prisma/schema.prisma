@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                  String       @id @default(uuid())
+  username            String       @unique
+  password            String
+  role                String       @default("USER") // ADMIN or USER
+  investorName        String?
+  investmentStartDate DateTime?
+  totalInvestment     Float        @default(0)
+  status              String       @default("نشط") // Active, Pending, etc.
+  profit              Float        @default(0)
+  bankFullName        String?
+  bankAccountNumber   String?
+  bankName            String?
+  rib                 String?
+  createdAt           DateTime     @default(now())
+  withdrawals         Withdrawal[]
+}
+
+model Withdrawal {
+  id                String   @id @default(uuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount            Float
+  bankFullName      String
+  bankAccountNumber String
+  bankName          String
+  rib               String
+  status            String   @default("قيد الانتظار") // Pending
+  adminNote         String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
