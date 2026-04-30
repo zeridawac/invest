@@ -48,10 +48,6 @@ export default function Sidebar({ isAdmin }: { isAdmin?: boolean }) {
               <Landmark size={20} className={styles.icon} />
               معلوماتي البنكية
             </Link>
-            <Link href="/loyalty-points" className={`${styles.link} ${pathname === '/loyalty-points' ? styles.active : ''}`}>
-              <Gift size={20} className={styles.icon} />
-              نقط الولاء
-            </Link>
           </>
         )}
       </nav>

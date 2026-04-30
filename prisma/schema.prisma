@@ -22,8 +22,9 @@ model User {
   bankName            String?
   rib                 String?
   loyaltyPoints       Float        @default(0)
-  spinsUsedToday      Int          @default(0)
-  lastSpinDate        DateTime?
+  level               String       @default("Bronze")
+  lastLoginDate       DateTime?
+  dailyPointsEarned   Float        @default(0)
   createdAt           DateTime     @default(now())
   withdrawals         Withdrawal[]
 }

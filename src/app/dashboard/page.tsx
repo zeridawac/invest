@@ -3,7 +3,46 @@
 import { useState, useEffect } from 'react';
 import styles from './dashboard.module.css';
 import MarketTicker from '@/components/MarketTicker';
-import { Wallet, TrendingUp, Activity, CheckCircle, AlertCircle } from 'lucide-react';
+import { Wallet, TrendingUp, Activity, CheckCircle, AlertCircle, Award, Star, Shield, Zap } from 'lucide-react';
+import { calculateLevel, getNextLevel, LEVELS } from '@/lib/gamification';
+
+// Simple Custom SVG Line Chart
+const GrowthChart = ({ data }: { data: number[] }) => {
+  const max = Math.max(...data, 100);
+  const min = Math.min(...data, 0);
+  const range = max - min;
+  const height = 150;
+  const width = 400;
+  
+  const points = data.map((val, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((val - min) / range) * height;
+    return `${x},${y}`;
+  }).join(' ');
+
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} className={styles.chartSvg}>
+      <defs>
+        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path
+        d={`M 0 ${height} L ${points} L ${width} ${height} Z`}
+        fill="url(#chartGradient)"
+      />
+      <polyline
+        fill="none"
+        stroke="var(--primary)"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        points={points}
+      />
+    </svg>
+  );
+};
 
 export default function DashboardPage() {
   const [investors, setInvestors] = useState<any[]>([]);
@@ -11,14 +50,13 @@ export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [withdrawStatus, setWithdrawStatus] = useState('');
-
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [meRes, invRes] = await Promise.all([
-          fetch('/api/auth/me'),
+          fetch('/api/users/me'),
           fetch('/api/users/investors')
         ]);
         
@@ -26,7 +64,7 @@ export default function DashboardPage() {
           const meData = await meRes.json();
           const invData = await invRes.json();
           setInvestors(invData);
-          setCurrentUser(invData.find((i: any) => i.id === meData.id));
+          setCurrentUser(meData);
         }
       } catch (err) {
         console.error(err);
@@ -52,7 +90,6 @@ export default function DashboardPage() {
         setWithdrawStatus('تم طلب السحب بنجاح');
         if (currentUser) {
            setCurrentUser({...currentUser, profit: currentUser.profit - Number(withdrawAmount)});
-           setInvestors(investors.map(inv => inv.id === currentUser.id ? {...inv, profit: inv.profit - Number(withdrawAmount)} : inv));
         }
         setTimeout(() => setShowModal(false), 2000);
       } else {
@@ -71,14 +108,40 @@ export default function DashboardPage() {
     </div>
   );
 
+  const currentLevel = calculateLevel(currentUser?.loyaltyPoints || 0);
+  const nextLevel = getNextLevel(currentUser?.loyaltyPoints || 0);
+  const progress = nextLevel 
+    ? ((currentUser.loyaltyPoints - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100
+    : 100;
+
+  // Mock data for the growth chart
+  const growthData = [0, 10, 25, 20, 45, 60, 80, 75, 100, 120, 150];
+
   return (
     <div>
       <div className={styles.headerArea}>
-        <h1 className={styles.pageTitle}>لوحة تحكم المستثمر</h1>
-        <p className={styles.welcomeText}>مرحباً بك مجدداً، استثماراتك في أمان.</p>
+        <div>
+          <h1 className={styles.pageTitle}>لوحة التحكم الذكية</h1>
+          <p className={styles.welcomeText}>مرحباً، {currentUser?.investorName}. استثماراتك تنمو باستمرار.</p>
+        </div>
+        
+        <div className={styles.levelBadge}>
+          <div className={styles.badgeIcon}>
+            {currentLevel.name === 'Bronze' && <Shield size={24} />}
+            {currentLevel.name === 'Silver' && <Zap size={24} />}
+            {currentLevel.name === 'Gold' && <Star size={24} />}
+            {currentLevel.name === 'VIP' && <Award size={24} />}
+          </div>
+          <span className={styles.levelName}>{currentLevel.name}</span>
+          <span className={styles.points}>{currentUser?.loyaltyPoints?.toFixed(0)} نقطة ولاء</span>
+          {nextLevel && (
+            <div className={styles.progressBarContainer}>
+              <div className={styles.progressBar} style={{ width: `${progress}%` }}></div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Market Ticker Component Added Here */}
       <MarketTicker />
 
       {currentUser && (
@@ -102,17 +165,25 @@ export default function DashboardPage() {
           <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <div className={styles.iconBoxWarning}><Activity size={32} /></div>
             <div>
-              <h3 className={styles.statLabel}>الحالة</h3>
-              <p className={styles.statValue}>{currentUser.status}</p>
+              <h3 className={styles.statLabel}>حالة الاستثمار</h3>
+              <p className={styles.statValue}>{currentUser.profit >= 0 ? 'ربح' : 'خسارة'}</p>
             </div>
           </div>
         </div>
       )}
 
+      <div className={styles.chartContainer}>
+        <div className={styles.chartHeader}>
+          <h2 className={styles.chartTitle}>رسم بياني للنمو</h2>
+          <span className={styles.welcomeText}>آخر 30 يوم</span>
+        </div>
+        <GrowthChart data={growthData} />
+      </div>
+
       <div className={styles.actions}>
         <button className="btn-primary" onClick={() => setShowModal(true)}>
           <CheckCircle size={20} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '0.5rem' }} />
-          تحقق من استثماري / سحب الأرباح
+          سحب الأرباح / التفاصيل
         </button>
       </div>
 
@@ -122,10 +193,9 @@ export default function DashboardPage() {
           <table>
             <thead>
               <tr>
-                <th>اسم المستثمر</th>
+                <th>المستثمر</th>
                 <th>تاريخ الاستثمار</th>
                 <th>إجمالي الاستثمار</th>
-                <th>الأرباح</th>
                 <th>الحالة</th>
               </tr>
             </thead>
@@ -133,15 +203,16 @@ export default function DashboardPage() {
               {investors.map((inv) => (
                 <tr key={inv.id} className={inv.id === currentUser?.id ? styles.highlightRow : ''}>
                   <td style={{ fontWeight: inv.id === currentUser?.id ? '700' : '500' }}>
-                    {inv.id === currentUser?.id ? `${inv.investorName} (أنت)` : inv.investorName}
+                    {inv.investorName} {inv.id === currentUser?.id && '(أنت)'}
                   </td>
                   <td>
                     {inv.id === currentUser?.id 
                       ? (inv.investmentStartDate ? new Date(inv.investmentStartDate).toLocaleDateString('ar-MA') : '-')
                       : 'مخفي'}
                   </td>
-                  <td className={styles.priceCell}>{inv.totalInvestment} MAD</td>
-                  <td className={styles.priceCellSuccess}>{inv.profit} MAD</td>
+                  <td style={{ fontFamily: 'monospace', fontWeight: '600' }}>
+                    {inv.totalInvestment} MAD
+                  </td>
                   <td>
                     <span className={`${styles.statusBadge} ${inv.status === 'نشط' ? styles.statusActive : ''}`}>
                       {inv.status}
@@ -163,16 +234,16 @@ export default function DashboardPage() {
             
             <div className={styles.modalContent}>
               <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>مبلغ الاستثمار:</span>
+                <span className={styles.detailLabel}>المبلغ:</span>
                 <span className={styles.detailValue}>{currentUser.totalInvestment} MAD</span>
               </div>
               <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>حالة الاستثمار:</span>
-                <span className={styles.detailValue}>{currentUser.status}</span>
+                <span className={styles.detailLabel}>الأرباح المتاحة:</span>
+                <span className={styles.detailValueSuccess}>{currentUser.profit} MAD</span>
               </div>
               <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>مبلغ الأرباح المتاح:</span>
-                <span className={styles.detailValueSuccess}>{currentUser.profit} MAD</span>
+                <span className={styles.detailLabel}>المستوى الحالي:</span>
+                <span className={styles.detailValue} style={{ color: currentLevel.color }}>{currentLevel.name}</span>
               </div>
             </div>
             
@@ -189,14 +260,14 @@ export default function DashboardPage() {
                     style={{ flexGrow: 1 }}
                   />
                   <button className="btn-success" onClick={handleWithdraw}>
-                    تأكيد السحب
+                    تأكيد
                   </button>
                 </div>
               </div>
             ) : (
               <div className={styles.noProfitAlert}>
                 <AlertCircle size={20} />
-                <span>لا توجد أرباح متاحة للسحب حالياً.</span>
+                <span>لا توجد أرباح حالية للسحب.</span>
               </div>
             )}
             
