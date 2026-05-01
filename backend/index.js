@@ -61,9 +61,18 @@ app.use((req, res) => {
 const { startMarketSimulation } = require('./utils/market');
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
   startMarketSimulation(io);
+});
+
+// Prevent server crash on unhandled errors
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
 module.exports = { io };
