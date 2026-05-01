@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/config';
 import { toast } from 'react-toastify';
 import './Riddles.css';
 
@@ -14,7 +14,7 @@ const Riddles = () => {
 
   const fetchRiddles = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/games/riddles');
+      const res = await api.get('/games/riddles');
       setRiddles(res.data);
       setLoading(false);
     } catch (err) {
@@ -28,7 +28,7 @@ const Riddles = () => {
     if (!answer) return toast.warn("يرجى إدخال الإجابة");
 
     try {
-      const res = await axios.post('http://localhost:5000/api/games/riddles/solve', { riddleId, answer });
+      const res = await api.post('/games/riddles/solve', { riddleId, answer });
       if (res.data.success) {
         toast.success(`أحسنت! ربحت ${res.data.reward} كوين`);
         fetchRiddles(); // Refresh to remove solved riddle

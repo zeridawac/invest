@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import api from '../../api/config';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -22,14 +22,14 @@ const Dashboard = () => {
   const handleCloseWelcome = async () => {
     setShowWelcome(false);
     try {
-      await axios.post('http://localhost:5000/api/users/welcome-dismissed');
+      await api.post('/users/welcome-dismissed');
       fetchUser();
     } catch (err) { console.error("Failed to dismiss welcome"); }
   };
 
   const fetchAnnouncements = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/announcements');
+      const res = await api.get('/admin/announcements');
       setAnnouncements(res.data);
     } catch (err) { console.error("Failed to fetch announcements"); }
   };

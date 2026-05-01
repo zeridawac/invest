@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/config';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import './Withdrawal.css';
@@ -29,7 +29,7 @@ const Withdrawal = () => {
 
   const fetchHistory = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/withdrawals/my');
+      const res = await api.get('/withdrawals/my');
       setHistory(res.data);
     } catch (err) {
       console.error(err);
@@ -47,8 +47,8 @@ const Withdrawal = () => {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/withdrawals', { points, bankDetails });
-      toast.success("تم إرسال طلب السحب بنجاح");
+      await api.post('/withdrawals', { points, bankDetails });
+      toast.success('تم إرسال طلب السحب بنجاح');
       fetchUser();
       fetchHistory();
       setIsEditingBank(false);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/config';
 import './Leaderboard.css';
 
 const Leaderboard = () => {
@@ -11,7 +11,7 @@ const Leaderboard = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/users/leaderboard');
+      const res = await api.get('/users/leaderboard');
       setUsers(res.data);
     } catch (err) {
       console.error("Leaderboard fetch failed");

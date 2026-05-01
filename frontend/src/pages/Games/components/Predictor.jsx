@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
+import api from '../../../api/config';
 import { useAuth } from '../../../context/AuthContext';
 
 const Predictor = () => {
@@ -31,7 +31,7 @@ const Predictor = () => {
 
     setTimeout(async () => {
       try {
-        const res = await axios.post('http://localhost:5000/api/games/predict', { bet, prediction: pred });
+        const res = await api.post('/games/predict', { bet, prediction: pred });
         setResult(res.data.result);
         if (res.data.won) {
           toast.success(`Correct! You won ${bet} points!`);

@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)
@@ -32,7 +34,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Routes Placeholder
+// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/user'));
 app.use('/api/coins', require('./routes/coin'));
@@ -50,5 +52,4 @@ server.listen(PORT, () => {
   startMarketSimulation(io);
 });
 
-// Export io for use in other files
 module.exports = { io };

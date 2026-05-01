@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../../api/config';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../../context/AuthContext';
 import confetti from 'canvas-confetti';
@@ -15,7 +15,7 @@ const ScratchCard = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/games/scratch');
+      const res = await api.post('/games/scratch');
       setReward(res.data.reward);
       setScratched(true);
       

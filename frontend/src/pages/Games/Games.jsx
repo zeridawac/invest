@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/config';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import confetti from 'canvas-confetti';
@@ -16,7 +16,7 @@ const Games = () => {
   const handleSpin = async () => {
     if (spinning) return;
     try {
-      const res = await axios.post('http://localhost:5000/api/games/spin');
+      const res = await api.post('/games/spin');
       const { reward } = res.data;
       setSpinning(true);
       const newRotation = rotation + 1800 + Math.random() * 360;
@@ -40,7 +40,7 @@ const Games = () => {
     if (tapping) return;
     setTapping(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/games/tap');
+      const res = await api.post('/games/tap');
       toast.success(`+${res.data.reward} points!`, { autoClose: 500, hideProgressBar: true });
       fetchUser();
     } catch (err) {

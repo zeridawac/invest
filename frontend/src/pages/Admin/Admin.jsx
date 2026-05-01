@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/config';
 import { toast } from 'react-toastify';
 import './Admin.css';
 
@@ -26,14 +26,14 @@ const Admin = () => {
   const fetchAdminData = async () => {
     try {
       const [coinRes, userRes, inviteRes, withdrawRes, couponRes, settingsRes, announceRes, riddleRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/coins'),
-        axios.get('http://localhost:5000/api/admin/users'),
-        axios.get('http://localhost:5000/api/admin/invite-codes'),
-        axios.get('http://localhost:5000/api/withdrawals/admin'),
-        axios.get('http://localhost:5000/api/admin/coupons'),
-        axios.get('http://localhost:5000/api/admin/settings'),
-        axios.get('http://localhost:5000/api/admin/announcements'),
-        axios.get('http://localhost:5000/api/admin/riddles')
+        api.get('/coins'),
+        api.get('/admin/users'),
+        api.get('/admin/invite-codes'),
+        api.get('/withdrawals/admin'),
+        api.get('/admin/coupons'),
+        api.get('/admin/settings'),
+        api.get('/admin/announcements'),
+        api.get('/admin/riddles')
       ]);
       setCoins(coinRes.data);
       setUsers(userRes.data);
@@ -51,7 +51,7 @@ const Admin = () => {
   const handleCreateAnnouncement = async () => {
     if (!newAnnouncement.message) return;
     try {
-      await axios.post('http://localhost:5000/api/admin/announcements', newAnnouncement);
+      await api.post('/admin/announcements', newAnnouncement);
       toast.success("تم نشر الإعلان");
       setNewAnnouncement({ message: '', imageUrl: '' });
       fetchAdminData();
@@ -61,7 +61,7 @@ const Admin = () => {
   const handleCreateRiddle = async () => {
     if (!newRiddle.question || !newRiddle.answer) return;
     try {
-      await axios.post('http://localhost:5000/api/admin/riddles', newRiddle);
+      await api.post('/admin/riddles', newRiddle);
       toast.success("تم إضافة اللغز");
       setNewRiddle({ question: '', answer: '', rewardPoints: 50 });
       fetchAdminData();
@@ -70,20 +70,20 @@ const Admin = () => {
 
   const updateSettings = async () => {
     try {
-      await axios.post('http://localhost:5000/api/admin/settings', { coinRate: settings.value });
+      await api.post('/admin/settings', { coinRate: settings.value });
       toast.success("تم تحديث سعر الكوين");
     } catch (err) { toast.error("فشل التحديث"); }
   };
 
   const handleUserAction = async (id, action, data = {}) => {
     try {
-      if (action === 'ban') await axios.post(`http://localhost:5000/api/admin/users/${id}/ban`);
+      if (action === 'ban') await api.post(`/admin/users/${id}/ban`);
       if (action === 'delete') {
         if (!window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
-        await axios.delete(`http://localhost:5000/api/admin/users/${id}`);
+        await api.delete(`/admin/users/${id}`);
       }
-      if (action === 'reset') await axios.patch(`http://localhost:5000/api/admin/users/${id}`, { points: 0, xp: 0 });
-      if (action === 'update') await axios.patch(`http://localhost:5000/api/admin/users/${id}`, data);
+      if (action === 'reset') await api.patch(`/admin/users/${id}`, { points: 0, xp: 0 });
+      if (action === 'update') await api.patch(`/admin/users/${id}`, data);
       
       toast.success("تمت العملية بنجاح");
       fetchAdminData();
@@ -94,7 +94,7 @@ const Admin = () => {
   const handleCreateCoupon = async () => {
     if (!newCoupon.code) return;
     try {
-      await axios.post('http://localhost:5000/api/admin/coupons', newCoupon);
+      await api.post('/admin/coupons', newCoupon);
       toast.success("تم إنشاء الكوبون");
       setNewCoupon({ code: '', rewardPoints: 100, maxUses: 1 });
       fetchAdminData();
@@ -103,7 +103,7 @@ const Admin = () => {
 
   const handleWithdrawalStatus = async (id, status) => {
     try {
-      await axios.patch(`http://localhost:5000/api/withdrawals/admin/${id}`, { status });
+      await api.patch(`/withdrawals/admin/${id}`, { status });
       toast.success("تم تحديث الحالة");
       fetchAdminData();
     } catch (err) { toast.error("فشل التحديث"); }
@@ -112,7 +112,7 @@ const Admin = () => {
   const createInvite = async () => {
     if (!newInvite) return;
     try {
-      await axios.post('http://localhost:5000/api/admin/invite-codes', { code: newInvite });
+      await api.post('/admin/invite-codes', { code: newInvite });
       toast.success("تم إنشاء كود الدعوة");
       setNewInvite('');
       fetchAdminData();
@@ -122,7 +122,7 @@ const Admin = () => {
   const pumpPrice = async (id, currentPrice) => {
     const newPrice = currentPrice * 1.1;
     try {
-      await axios.post(`http://localhost:5000/api/admin/coins/${id}/price`, { newPrice });
+      await api.post(`/admin/coins/${id}/price`, { newPrice });
       toast.success("تم الرفع بـ 10%!");
       fetchAdminData();
     } catch (err) { toast.error("فشل العملية"); }
@@ -131,7 +131,7 @@ const Admin = () => {
   const dumpPrice = async (id, currentPrice) => {
     const newPrice = currentPrice * 0.9;
     try {
-      await axios.post(`http://localhost:5000/api/admin/coins/${id}/price`, { newPrice });
+      await api.post(`/admin/coins/${id}/price`, { newPrice });
       toast.error("تم الخفض بـ 10%!");
       fetchAdminData();
     } catch (err) { toast.error("فشل العملية"); }
