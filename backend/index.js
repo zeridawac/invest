@@ -22,9 +22,13 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Connection
+console.log('Attempting to connect to MongoDB...');
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log('MongoDB Connection Error:', err));
+  .then(() => console.log('✅ MongoDB Connected Successfully'))
+  .catch(err => {
+    console.error('❌ MongoDB Connection Error:', err);
+    // Don't exit, let the server start so we can at least see the health check
+  });
 
 // Socket.io
 io.on('connection', (socket) => {
@@ -61,9 +65,20 @@ app.use((req, res) => {
 const { startMarketSimulation } = require('./utils/market');
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-  startMarketSimulation(io);
+console.log(`Starting server on port ${PORT}...`);
+
+server.listen(PORT, '0.0.0.0', (err) => {
+  if (err) {
+    console.error('❌ Server failed to start:', err);
+    return;
+  }
+  console.log(`✅ Server is officially running and listening on 0.0.0.0:${PORT}`);
+  try {
+    startMarketSimulation(io);
+    console.log('✅ Market simulation started');
+  } catch (simErr) {
+    console.error('⚠️ Market simulation failed to start:', simErr);
+  }
 });
 
 // Prevent server crash on unhandled errors
