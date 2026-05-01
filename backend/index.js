@@ -53,12 +53,9 @@ app.get('/api/status', (req, res) => {
   res.json({ message: "Reda Invest API is running successfully! 🚀" });
 });
 
-// Serve Frontend Static Files
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-// Catch-all route for React Router (must be last)
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+// Root route for health check
+app.get('/', (req, res) => {
+  res.send('API is running 🚀');
 });
 
 
@@ -67,11 +64,7 @@ const { startMarketSimulation } = require('./utils/market');
 const PORT = process.env.PORT || 5000;
 console.log(`Starting server on port ${PORT}...`);
 
-server.listen(PORT, '0.0.0.0', (err) => {
-  if (err) {
-    console.error('❌ Server failed to start:', err);
-    return;
-  }
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server is officially running and listening on 0.0.0.0:${PORT}`);
   try {
     startMarketSimulation(io);
