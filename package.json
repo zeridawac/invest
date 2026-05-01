@@ -1,0 +1,11 @@
+{
+  "name": "reda-invest-unified",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "cd backend && node index.js",
+    "build": "cd frontend && npm install && npm run build",
+    "install-backend": "cd backend && npm install",
+    "postinstall": "npm run install-backend"
+  }
+}

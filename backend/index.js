@@ -44,6 +44,20 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/withdrawals', require('./routes/withdrawal'));
 app.use('/api/coupons', require('./routes/coupon'));
 
+// API Status Check
+app.get('/api/status', (req, res) => {
+  res.json({ message: "Reda Invest API is running successfully! 🚀" });
+});
+
+// Serve Frontend Static Files
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Catch-all route for React Router (must be last)
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+});
+
+
 const { startMarketSimulation } = require('./utils/market');
 
 const PORT = process.env.PORT || 5000;
