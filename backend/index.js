@@ -8,6 +8,11 @@ const path = require('path');
 
 dotenv.config();
 
+console.log("🚀 Starting backend...");
+console.log("📍 PORT:", process.env.PORT);
+console.log("🌐 NODE_ENV:", process.env.NODE_ENV);
+console.log("📦 Working Directory:", process.cwd());
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -23,10 +28,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Connection
 console.log('Attempting to connect to MongoDB...');
+if (!process.env.MONGO_URI) {
+  console.error('❌ CRITICAL: MONGO_URI is missing from environment variables!');
+}
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB Connected Successfully'))
   .catch(err => {
-    console.error('❌ MongoDB Connection Error:', err);
+    console.error('❌ MongoDB Connection Error Details:');
+    console.error('Error Name:', err.name);
+    console.error('Error Message:', err.message);
+    console.error('Error Code:', err.code);
     // Don't exit, let the server start so we can at least see the health check
   });
 
@@ -64,8 +76,9 @@ const { startMarketSimulation } = require('./utils/market');
 const PORT = process.env.PORT || 5000;
 console.log(`Starting server on port ${PORT}...`);
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server is officially running and listening on 0.0.0.0:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
   try {
     startMarketSimulation(io);
     console.log('✅ Market simulation started');
