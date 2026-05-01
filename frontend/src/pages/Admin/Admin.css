@@ -1,0 +1,206 @@
+.admin-page {
+  padding: 20px;
+  padding-bottom: 90px;
+}
+
+.admin-section {
+  margin-bottom: 20px;
+}
+
+.flex-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.flex-row input {
+  flex: 1;
+  min-width: 150px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.coupon-admin-inputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+@media (min-width: 768px) {
+  .coupon-admin-inputs {
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  }
+}
+
+.coupons-list-admin {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+}
+
+.coupon-item-admin {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.coins-admin, .users-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.coin-admin-item, .user-admin-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+
+.admin-btns {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-pump { background: #00ff88; color: #000; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.btn-dump { background: #ff4d4d; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.btn-ban { background: var(--danger); border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.btn-unban { background: var(--success); border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+
+.withdrawal-admin-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.bank-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(0,0,0,0.2);
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+.bank-info-box small {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.w-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.btn-success { background: var(--success); border: none; color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+.users-list-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.user-card-admin {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.user-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  cursor: pointer;
+}
+
+.user-main-info:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.u-info-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.u-info-left strong {
+  font-size: 1.1rem;
+}
+
+.u-info-left span {
+  font-size: 0.9rem;
+  color: var(--secondary);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-dot.active { background: var(--success); box-shadow: 0 0 10px var(--success); }
+.status-dot.banned { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+
+.user-details-edit {
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--glass-border);
+}
+
+.edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-user-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-user-btns button {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.btn-reset { background: #ffcc00; color: #000; }
+.btn-danger-small { background: var(--danger); color: white; }
+
+.admin-user-btns button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.settings-admin {
+  align-items: flex-end;
+}
+

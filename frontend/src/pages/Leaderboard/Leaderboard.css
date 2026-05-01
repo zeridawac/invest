@@ -1,0 +1,41 @@
+.leaderboard-page {
+  padding: 20px;
+  padding-bottom: 90px;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.leader-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+
+.leader-item.top-three {
+  border-left: 4px solid var(--accent-gold);
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.rank {
+  font-weight: bold;
+  color: var(--text-muted);
+  width: 30px;
+}
+
+.username {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.points {
+  font-weight: bold;
+  color: var(--secondary);
+}

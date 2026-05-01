@@ -1,0 +1,71 @@
+.riddles-page {
+  padding: 20px;
+  padding-bottom: 100px;
+  text-align: center;
+}
+
+.riddles-subtitle {
+  color: var(--secondary);
+  margin-bottom: 30px;
+  font-size: 0.9rem;
+}
+
+.riddles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.riddle-card {
+  padding: 25px;
+  text-align: right;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+.riddle-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.reward-tag {
+  background: var(--primary);
+  color: black;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.question {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-weight: 500;
+}
+
+.solve-box {
+  display: flex;
+  gap: 10px;
+}
+
+.solve-box input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  color: white;
+  padding: 12px 15px;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+}
+
+.solve-box button {
+  padding: 0 20px;
+}
+
+.no-riddles {
+  padding: 40px;
+  color: var(--text-muted);
+}
