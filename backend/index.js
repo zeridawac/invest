@@ -26,31 +26,6 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Database Connection
-console.log('Attempting to connect to MongoDB...');
-if (!process.env.MONGO_URI) {
-  console.error('❌ CRITICAL: MONGO_URI is missing from environment variables!');
-}
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB Connected Successfully'))
-  .catch(err => {
-    console.error('❌ MongoDB Connection Error Details:');
-    console.error('Error Name:', err.name);
-    console.error('Error Message:', err.message);
-    console.error('Error Code:', err.code);
-    // Don't exit, let the server start so we can at least see the health check
-  });
-
-// Socket.io
-io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
-
-// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/user'));
 app.use('/api/coins', require('./routes/coin'));
@@ -60,34 +35,51 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/withdrawals', require('./routes/withdrawal'));
 app.use('/api/coupons', require('./routes/coupon'));
 
-// API Status Check
 app.get('/api/status', (req, res) => {
   res.json({ message: "Reda Invest API is running successfully! 🚀" });
 });
 
-// Root route for health check
 app.get('/', (req, res) => {
   res.send('API is running 🚀');
 });
 
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
 
 const { startMarketSimulation } = require('./utils/market');
 
 const PORT = process.env.PORT || 5000;
-console.log(`Starting server on port ${PORT}...`);
 
-server.listen(PORT, "0.0.0.0", () => {
+server.listen(PORT, "0.0.0.0", async () => {
   console.log(`✅ Server is officially running and listening on 0.0.0.0:${PORT}`);
-  console.log(`Server running on port ${PORT}`);
+
+  if (!process.env.MONGO_URI) {
+    console.error('❌ CRITICAL: MONGO_URI is missing!');
+    return;
+  }
+
   try {
+    console.log('Attempting to connect to MongoDB...');
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 10000
+    });
+
+    console.log('✅ MongoDB Connected Successfully');
+
     startMarketSimulation(io);
     console.log('✅ Market simulation started');
-  } catch (simErr) {
-    console.error('⚠️ Market simulation failed to start:', simErr);
+  } catch (err) {
+    console.error('❌ MongoDB Connection Error Details:');
+    console.error('Error Name:', err.name);
+    console.error('Error Message:', err.message);
+    console.error('Error Code:', err.code);
   }
 });
 
-// Prevent server crash on unhandled errors
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
