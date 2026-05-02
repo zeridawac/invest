@@ -24,7 +24,7 @@ const Register = () => {
 
   return (
     <div className="auth-page animate-in">
-      <div className="rig-logo auth-logo">لعبة رضا</div>
+      <div className="rig-logo auth-logo">لعبة رضا للاستثمار</div>
       <form className="glass-panel auth-form" onSubmit={handleSubmit}>
         <h2>إنشاء حساب</h2>
         <input 

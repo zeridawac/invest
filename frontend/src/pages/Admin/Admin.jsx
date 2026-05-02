@@ -11,6 +11,8 @@ const Admin = () => {
   const [coupons, setCoupons] = useState([]);
   const [newCoupon, setNewCoupon] = useState({ code: '', rewardPoints: 100, maxUses: 1 });
   const [newInvite, setNewInvite] = useState('');
+  const [newCoin, setNewCoin] = useState({ name: '', symbol: '', currentPrice: 1, riskLevel: 'Medium' });
+
 
   const [settings, setSettings] = useState({ value: 0.0001 });
   const [selectedUser, setSelectedUser] = useState(null);
@@ -57,6 +59,20 @@ const Admin = () => {
       fetchAdminData();
     } catch (err) { toast.error("فشل النشر"); }
   };
+
+  const handleCreateCoin = async () => {
+    if (!newCoin.name || !newCoin.symbol) {
+      toast.error("يرجى إدخال اسم ورمز العملة");
+      return;
+    }
+    try {
+      await api.post('/admin/coins', newCoin);
+      toast.success("تم إضافة العملة بنجاح!");
+      setNewCoin({ name: '', symbol: '', currentPrice: 1, riskLevel: 'Medium' });
+      fetchAdminData();
+    } catch (err) { toast.error("فشل إضافة العملة"); }
+  };
+
 
   const handleCreateRiddle = async () => {
     if (!newRiddle.question || !newRiddle.answer) return;
@@ -195,7 +211,39 @@ const Admin = () => {
       </section>
 
       <section className="admin-section glass-panel">
-        <h3>التحكم في السوق</h3>
+        <h3>التحكم في السوق وإضافة العملات</h3>
+        <div className="flex-column gap-10 mb-20" style={{ marginBottom: '20px' }}>
+          <div className="coupon-admin-inputs">
+            <input 
+              type="text" 
+              placeholder="اسم العملة (مثل Bitcoin)" 
+              value={newCoin.name}
+              onChange={e => setNewCoin({...newCoin, name: e.target.value})}
+            />
+            <input 
+              type="text" 
+              placeholder="الرمز (مثل BTC)" 
+              value={newCoin.symbol}
+              onChange={e => setNewCoin({...newCoin, symbol: e.target.value.toUpperCase()})}
+            />
+            <input 
+              type="number" 
+              placeholder="السعر الأولي" 
+              value={newCoin.currentPrice}
+              onChange={e => setNewCoin({...newCoin, currentPrice: Number(e.target.value)})}
+            />
+            <select 
+              value={newCoin.riskLevel} 
+              onChange={e => setNewCoin({...newCoin, riskLevel: e.target.value})}
+              style={{ padding: '10px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
+            >
+              <option value="Low" style={{color: 'black'}}>Low Risk</option>
+              <option value="Medium" style={{color: 'black'}}>Medium Risk</option>
+              <option value="High" style={{color: 'black'}}>High Risk</option>
+            </select>
+            <button className="btn-primary" onClick={handleCreateCoin}>إضافة عملة</button>
+          </div>
+        </div>
         <div className="coins-admin">
           {coins.map(coin => (
             <div key={coin._id} className="coin-admin-item">
